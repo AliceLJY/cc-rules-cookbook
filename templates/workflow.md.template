@@ -1,0 +1,139 @@
+# Workflow Methodology
+
+<!-- CUSTOMIZE: Place this file at .claude/rules/workflow.md or reference it
+     from your CLAUDE.md. This is the 3-stage system for complex tasks. -->
+
+## Research -> Plan -> Implement
+
+Complex tasks MUST follow three stages. Skipping stages is the #1 cause of wasted work.
+
+### Stage 1: Research
+
+- Deep-read related code, docs, and materials
+- Produce `research.md` with findings
+- Human reviews before moving to Stage 2
+- Goal: understand the problem space fully before proposing solutions
+
+### Stage 2: Plan + Annotation Loop
+
+- Produce `plan.md` with:
+  - Code snippets showing the approach
+  - File paths that will be modified
+  - TODO list with clear acceptance criteria
+- Human adds annotations directly in the plan file (e.g., `[Note: ...]`)
+- CC processes annotations and updates the plan
+- Loop 1-N rounds until the plan is approved
+- **NO code changes during this stage** -- planning only
+
+### Stage 3: Implement (ReAct Loop)
+
+Execute `plan.md` step by step. Each step follows the ReAct cycle:
+
+```
++-------+     +---------+     +---------+     +--------+
+|  Act  | --> | Observe | --> | Reflect | --> | Record |
++-------+     +---------+     +---------+     +--------+
+    ^                                              |
+    |                                              |
+    +---------- next step <------------------------+
+```
+
+- **Act**: Execute the step
+- **Observe**: Read the actual result -- did it match expectations?
+- **Reflect**: If unexpected -> stop, diagnose, decide: continue / adjust plan / revert
+- **Record**: Mark step done + write a one-line observation note
+
+**Critical rule**: Wrong direction -> revert, don't patch. Patches on top of mistakes compound into unmaintainable code.
+
+---
+
+## When to Use Each Stage
+
+| Task Complexity | Approach |
+|----------------|----------|
+| Simple (< 20 LOC, single file) | Just do it -- no formal stages needed |
+| Medium (20-100 LOC, 2-5 files) | Lightweight plan (mental or 5-line outline), then implement |
+| Complex (100+ LOC, 5+ files) | Full 3-stage process with written artifacts |
+| Critical (production, irreversible) | 3-stage + have a second reviewer check the plan |
+
+---
+
+## Research-Implementation Separation
+
+- **Same task**: research -> plan -> implement stays in the same session (context continuity)
+- **Different tasks**: each gets a new session (no context pollution)
+- If research fills too much context -> write research.md to file, start a new session that reads it
+- Don't say "build me X system" in one go -> the research phase pollutes the implementation context
+
+---
+
+## Task Contract
+
+<!-- CUSTOMIZE: Use this for any task where "done" is ambiguous. -->
+
+For complex tasks, define completion criteria upfront:
+
+```markdown
+# {TASK}_CONTRACT.md
+
+## Acceptance Criteria
+- [ ] All tests pass (`npm test`)
+- [ ] No lint warnings (`npm run lint`)
+- [ ] Feature works as demonstrated in [screenshot/recording]
+- [ ] Edge case X is handled
+- [ ] Documentation updated
+
+## Not Done Until
+- Agent not meeting contract = not done
+- Wrong direction -> revert and restart, don't patch
+```
+
+---
+
+## Parallel Workflows
+
+- Multiple independent tasks -> use git worktrees + separate CC sessions
+- Avoid handling unrelated tasks in one session -- context pollution degrades quality
+- Independent subtasks within a session can be dispatched to subagents
+
+---
+
+## Subagent Guidelines
+
+<!-- CUSTOMIZE: Adjust based on your model preferences. -->
+
+- Use subagents for isolated subtasks to keep the main context clean
+- Don't downgrade model quality for subagents -- match the parent's capability
+- Use lightweight "explore" type agents for pure search/read tasks
+
+---
+
+## Plan File Format
+
+<!-- CUSTOMIZE: Adapt this template for your plan.md files. -->
+
+```markdown
+# Plan: [Task Name]
+
+## Goal
+[One sentence: what are we trying to achieve?]
+
+## Context
+[Relevant files, current behavior, constraints]
+
+## Approach
+[High-level strategy]
+
+## Steps
+- [ ] Step 1: [description] — files: `path/to/file.ts`
+- [ ] Step 2: [description] — files: `path/to/other.ts`
+- [ ] Step 3: [description] — files: `path/to/test.ts`
+
+## Risks
+[What could go wrong? What assumptions are we making?]
+
+## Done When
+[Specific, testable criteria]
+```
+
+**The plan must be persisted to a file**, not just discussed in conversation. It becomes the shared mutable state between human and CC.

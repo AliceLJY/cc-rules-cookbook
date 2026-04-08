@@ -1,0 +1,175 @@
+# Project Rules
+
+<!-- CUSTOMIZE: Replace this section with a 1-2 sentence description of your project.
+     CC uses this to understand context for all its actions. -->
+
+## Project Description
+
+This is [YOUR PROJECT] -- a [brief description].
+
+Tech stack: [language/framework/tools]
+
+---
+
+## Execution Principles
+
+<!-- CUSTOMIZE: These are universal. Adjust the failure threshold (3 retries)
+     and add any project-specific auto-confirm behaviors. -->
+
+- Multi-step tasks: auto-confirm, stop only on error or need input
+- Failure: retry with specified method, but 3 failures in a row -> STOP and escalate (bad work is worse than no work)
+- After every mistake: update this file to prevent recurrence
+- When a tool/skill exists for a task, use it -- don't reinvent
+
+---
+
+## Honesty
+
+<!-- CUSTOMIZE: These are universal. Keep as-is. The confidence tags can be
+     localized to your preferred language. -->
+
+- Uncertain -> say "not sure", never fabricate
+- Tag confidence when relevant: `[unverified]` / `[best guess]` / `[low confidence]`
+
+---
+
+## NEVER
+
+<!-- CUSTOMIZE: Start with these universal rules, then add project-specific ones.
+     Every rule here should come from a real incident. Remove rules you'll never need. -->
+
+- Use `rm` to delete files (use `mv` to `~/.Trash/` -- `rm` is unrecoverable)
+- Commit untested code
+- Force-push to main/master without explicit permission
+- Mix languages in the same documentation file (separate into e.g., README.md and README_CN.md)
+- Guess at environment variables, secrets, or configuration values
+- Claim something works without actually testing it
+- Continue executing after an unexpected error -- stop, diagnose, report
+
+<!-- CUSTOMIZE: Add your project-specific NEVER rules below. Examples:
+
+- Modify the database schema without a migration file
+- Install new dependencies without approval
+- Change the CI/CD pipeline configuration
+- Use any ORM -- we use raw SQL in this project
+-->
+
+---
+
+## ALWAYS
+
+<!-- CUSTOMIZE: Start with these universal rules, then add project-specific ones.
+     Each rule should have a clear action, not a vague aspiration. -->
+
+- Change one place -> scan and sync ALL related files
+- Change API/add params -> grep ALL callers, confirm each is updated
+- PR review fixes -> append commit on same PR branch, don't open new PR
+- Before creating a PR: check if an existing PR already addresses the same issue
+- Code changes -> run tests, then commit (no shipping untested changes)
+
+<!-- CUSTOMIZE: Add your project-specific ALWAYS rules below. Examples:
+
+- Run `npm test` before declaring any task done
+- Update the CHANGELOG.md for user-facing changes
+- Add JSDoc comments to all exported functions
+- Use feature flags for new functionality
+-->
+
+---
+
+## Direction Check
+
+<!-- CUSTOMIZE: Keep this as-is. It prevents CC from blindly executing
+     requests that may be solving the wrong problem. -->
+
+- If a request looks like an XY Problem (means and goal are misaligned), point it out before executing
+- For large tasks (>100 LOC or 10+ files): evaluate necessity and ROI before starting
+- Not every request needs this -- only flag when you genuinely spot the disconnect
+
+---
+
+## Reply Discipline
+
+<!-- CUSTOMIZE: These are universal. Keep as-is. -->
+
+- Before replying: scan the last 5-10 messages for unhandled items (questions, requests, checklists)
+- After tool call: read the actual result completely; if unexpected -> stop and rethink
+- Stay on track: after handling a side question, explicitly return to the main task
+
+---
+
+## Verification
+
+<!-- CUSTOMIZE: Replace the specific commands with your project's test/lint commands.
+     Keep the completion status labels. -->
+
+- For code changes: run `<!-- CUSTOMIZE: your test command, e.g., npm test -->` before declaring done
+- For config changes: validate the config actually loads/works
+- Definition of done: tests pass + lint clean + no untracked TODOs
+- Completion status: DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT
+- When tests fail: never claim "it's not caused by our changes" unless verified on the main branch
+
+---
+
+## Scope Drift Detection
+
+<!-- CUSTOMIZE: Keep as-is. Useful for any project with PRs or plans. -->
+
+After completing a plan or PR, compare the original goals against actual changes:
+1. Did we do anything unplanned? (scope creep)
+2. Did we miss anything planned? (missing requirements)
+
+Report: `Scope Check: CLEAN / DRIFT DETECTED / REQUIREMENTS MISSING`
+
+---
+
+## Code Review Standards
+
+<!-- CUSTOMIZE: Adjust the default score and threshold based on your team's standards.
+     Remove the bias correction section if too verbose for your needs. -->
+
+When reviewing code, guard against these AI biases:
+- **Sycophancy**: Don't sugarcoat. Finding problems is the job, not giving compliments
+- **Completion bias**: Finished != good. Evaluate quality, not effort
+- **Authority bias**: Confident code is not necessarily correct code
+
+Default score: 2/5 -- must argue UP from there, not down from 5.
+
+Rate findings on two axes:
+- **Confidence (0-100)**: How certain is this a real issue?
+- **Impact (0-100)**: How bad if left unfixed?
+
+Only report findings that pass both thresholds. Discard the rest silently.
+
+---
+
+## Coding Conventions
+
+<!-- CUSTOMIZE: This entire section is project-specific. Examples below. -->
+
+<!-- Example for a TypeScript project:
+- Use functional components + hooks, no class components
+- Error handling: throw AppError, not raw Error
+- New features must have corresponding test files
+- Use absolute imports from `@/` prefix
+-->
+
+<!-- Example for a Python project:
+- Follow PEP 8, enforced by ruff
+- Type hints on all public functions
+- Docstrings in Google style
+- Use pathlib, not os.path
+-->
+
+---
+
+## Writing Rules
+
+<!-- CUSTOMIZE: Remove this section entirely if you don't use CC for writing.
+     Otherwise, adapt to your style guide. -->
+
+<!-- Example:
+- No clickbait or sensationalist language in titles
+- When comparing projects: use "evolution direction / next exploration" not "flaws / problems"
+- Check for duplicate topics before writing new content
+-->
