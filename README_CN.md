@@ -6,6 +6,7 @@
 
 [![Frameworks](https://img.shields.io/badge/frameworks-5-blue)](./frameworks/)
 [![Methodology](https://img.shields.io/badge/methodology-6%20systems-orange)](./methodology/)
+[![Borrowed Patterns](https://img.shields.io/badge/borrowed%20patterns-5-purple)](./borrowed-patterns/)
 [![Architecture](https://img.shields.io/badge/architecture-3%20patterns-green)](./architecture/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
@@ -146,6 +147,20 @@ research.md  -->  plan.md         --> 代码变更
 ### [技能进化](./methodology/skill-evolution.md)
 
 系统化提炼：重复工作流 -> 技能，体验差的技能 -> 更新，一次性脚本 -> 工具箱，行为模式 -> 规则。
+
+---
+
+## 借鉴与改造
+
+来自其他项目的成熟理念，改造后用于 Claude Code 工作流。每条都标明来源、改造方式和使用场景。完整内容见 [borrowed-patterns/](./borrowed-patterns/)。
+
+| 模式 | 来源 | 核心理念 |
+|------|------|---------|
+| [失败模式五层分类](./borrowed-patterns/failure-modes-five-layers.md) | [Huyen Chip](https://huyenchip.com/2025/01/07/agents.html) | Agent 故障分 L1-L5 五层，层级决定修复策略 |
+| [报告优先](./borrowed-patterns/report-first-pattern.md) | [OpenClaw Medical Skills](https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills) | 静默构建交付物，只呈现终稿 |
+| [把湖烧开](./borrowed-patterns/boil-the-lake.md) | [gstack](https://github.com/garrytan/gstack)（Garry Tan） | AI 让完整方案的边际成本趋零——选简单的，选定后做完整的 |
+| [两阶段分类](./borrowed-patterns/two-stage-classification.md) | [Anthropic Auto Mode](https://www.anthropic.com/engineering/claude-code-auto-mode) | 快速过滤 + 深度分析；剥离说辞层再判断 |
+| [可衡量结果](./borrowed-patterns/measurable-outcome.md) | [OpenClaw Medical Skills](https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills) | 开工前定义可测试的成功标准，完成后自检 |
 
 ---
 

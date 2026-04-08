@@ -6,6 +6,7 @@
 
 [![Frameworks](https://img.shields.io/badge/frameworks-5-blue)](./frameworks/)
 [![Methodology](https://img.shields.io/badge/methodology-6%20systems-orange)](./methodology/)
+[![Borrowed Patterns](https://img.shields.io/badge/borrowed%20patterns-5-purple)](./borrowed-patterns/)
 [![Architecture](https://img.shields.io/badge/architecture-3%20patterns-green)](./architecture/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
@@ -146,6 +147,20 @@ Three violations of the same rule -> the rule gets promoted from CLAUDE.md to a 
 ### [Skill Evolution](./methodology/skill-evolution.md)
 
 Systematic refinement: repeated workflow -> skill, bad skill -> update, one-off script -> toolbox, behavior pattern -> rule.
+
+---
+
+## Borrowed & Adapted Patterns
+
+Proven ideas from other projects, adapted for Claude Code. Each credits the source, explains the adaptation, and shows where it's used. See [borrowed-patterns/](./borrowed-patterns/) for the full collection.
+
+| Pattern | Source | Core Idea |
+|---------|--------|-----------|
+| [Failure Modes -- Five Layers](./borrowed-patterns/failure-modes-five-layers.md) | [Huyen Chip](https://huyenchip.com/2025/01/07/agents.html) | Agent failures form a hierarchy (L1-L5); the layer determines the fix strategy |
+| [Report-First](./borrowed-patterns/report-first-pattern.md) | [OpenClaw Medical Skills](https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills) | Build the deliverable silently, deliver only the final report |
+| [Boil the Lake](./borrowed-patterns/boil-the-lake.md) | [gstack](https://github.com/garrytan/gstack) (Garry Tan) | AI makes completeness cheap -- pick simple, then execute fully |
+| [Two-Stage Classification](./borrowed-patterns/two-stage-classification.md) | [Anthropic Auto Mode](https://www.anthropic.com/engineering/claude-code-auto-mode) | Fast filter + deep analysis; strip the persuasion layer before judging |
+| [Measurable Outcome](./borrowed-patterns/measurable-outcome.md) | [OpenClaw Medical Skills](https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills) | Define testable success criteria before starting, self-check after |
 
 ---
 
