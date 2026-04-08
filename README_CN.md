@@ -192,7 +192,7 @@ CC 用得顺不顺，差别几乎全在你的 `CLAUDE.md` 写得好不好。
 
 ## 相关项目
 
-- [**cc-hooks-gallery**](https://github.com/anthropics/cc-hooks-gallery) -- Claude Code 自动化 Hook 合集
+- [**cc-hooks-gallery**](https://github.com/AliceLJY/cc-hooks-gallery) -- Claude Code 自动化 Hook 合集
 
 ---
 

@@ -192,7 +192,7 @@ Found a rule that saved your bacon? Open a PR! Each lesson should follow the for
 
 ## Companion Repos
 
-- [**cc-hooks-gallery**](https://github.com/anthropics/cc-hooks-gallery) -- Pre-built hooks for Claude Code automation
+- [**cc-hooks-gallery**](https://github.com/AliceLJY/cc-hooks-gallery) -- Pre-built hooks for Claude Code automation
 
 ---
 
