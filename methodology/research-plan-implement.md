@@ -1,101 +1,145 @@
 # Research -> Plan -> Implement
 
-The 3-stage methodology for complex tasks. Skipping stages is the #1 source of wasted work in Claude Code sessions.
+**A three-stage discipline for complex tasks. Not a suggestion -- a requirement. Skipping stages is the #1 source of wasted work.**
 
-## Why Three Stages?
+---
 
-Without stages, complex tasks unfold like this:
-1. CC starts reading code (research)
-2. While reading, it starts forming a plan
-3. While planning, it starts writing code
-4. The code reflects a plan that was formed while still researching
-5. New information invalidates the approach
-6. Patches on patches until the code is unmaintainable
-7. Revert and start over
+## Why Three Stages
 
-With stages:
-1. Research produces a complete understanding
-2. The plan is based on complete information
-3. Implementation follows a reviewed plan
-4. Changes are intentional, not reactive
+Complex tasks fail when research and implementation happen simultaneously. The AI fills its context with exploratory reading, then tries to write code in a polluted context window. The result: confused output that half-understands the problem.
+
+Separation is the fix. Research produces understanding. Planning produces a contract. Implementation executes the contract.
+
+---
 
 ## Stage 1: Research
 
-**Goal**: Understand the problem space completely before proposing solutions.
+**Goal**: Understand the problem space fully before proposing solutions.
 
-**Process**:
-- Deep-read related code, documentation, and materials
+- Deep-read related code, docs, APIs, and constraints
 - Produce `research.md` with findings
-- Human reviews the research before proceeding
+- Human reviews `research.md` before Stage 2 begins
+
+**Rules**:
+- No code changes during research
+- No solution proposals yet -- understand first, solve later
+- If research fills too much context, write `research.md` to disk and start a fresh session
 
 **Output**: `research.md` containing:
 - Current system behavior
-- Relevant code paths and their responsibilities
+- Relevant code paths and file locations
 - Constraints and dependencies
-- Edge cases discovered
+- Open questions for the human reviewer
 
-**Rule**: No code changes during research. The temptation to "fix that while I'm here" is strong. Resist it.
+---
 
 ## Stage 2: Plan + Annotation Loop
 
-**Goal**: Produce a concrete, reviewable plan before writing any code.
+**Goal**: Produce a concrete implementation plan that the human approves before any code is written.
 
-**Process**:
-1. Produce `plan.md` with code snippets, file paths, and TODO items
-2. Human reviews and adds annotations (e.g., `[Note: use existing helper here]`)
-3. CC processes annotations and updates the plan
-4. Repeat 1-N rounds until the plan is approved
+- Write `plan.md` with:
+  - Code snippets showing the approach
+  - File paths that will be modified
+  - TODO list with specific acceptance criteria
+  - Risk assessment
 
-**Output**: `plan.md` containing:
-- Approach description
-- Step-by-step TODO list
-- File paths that will be modified
-- Code snippets showing the approach
-- Acceptance criteria
+### The Annotation Loop
 
-**Critical rules**:
-- **NO code changes during planning** -- planning only
-- **plan.md must be a file**, not just conversation -- it's shared mutable state
-- Important plans: have a second reviewer (or a second CC session) check it
-
-## Stage 3: Implement (ReAct Loop)
-
-**Goal**: Execute the plan step by step with verification at each step.
-
-**Process**: Each step follows the ReAct cycle:
+`plan.md` is **shared mutable state** between human and AI.
 
 ```
-Act -> Observe -> Reflect -> Record -> Next Step
++------------------+          +------------------+
+|   CC writes      |          |   Human adds     |
+|   plan.md        |--------->|   [Note: ...]    |
+|                  |          |   annotations    |
++------------------+          +------------------+
+         ^                             |
+         |                             |
+         +----  CC processes  <--------+
+                annotations
+                updates plan
 ```
 
-- **Act**: Execute the step from plan.md
-- **Observe**: Read the actual result -- did it match expectations?
-- **Reflect**: If unexpected -> stop, diagnose, decide: continue / adjust plan / revert
-- **Record**: Mark step done + write a one-line observation note
+The loop runs 1-N rounds until the human is satisfied. During this stage:
 
-**Critical rule**: Wrong direction -> **revert, don't patch**. Patches on mistakes compound into unmaintainable code. It's cheaper to revert 3 steps than to patch around them.
+- **NO code changes** -- planning only
+- Annotations use the format `[Note: your comment here]`
+- CC processes every annotation and either incorporates it or explains why not
+- The plan must be **persisted to a file**, not just discussed in conversation
 
-## When to Skip Stages
+### Plan File Format
+
+```markdown
+# Plan: [Task Name]
+
+## Goal
+[One sentence: what are we trying to achieve?]
+
+## Context
+[Relevant files, current behavior, constraints]
+
+## Approach
+[High-level strategy]
+
+## Steps
+- [ ] Step 1: [description] -- files: `path/to/file.ts`
+- [ ] Step 2: [description] -- files: `path/to/other.ts`
+- [ ] Step 3: [description] -- files: `path/to/test.ts`
+
+## Risks
+[What could go wrong? What assumptions are we making?]
+
+## Done When
+[Specific, testable criteria]
+```
+
+---
+
+## Stage 3: Implement (with ReAct Loop)
+
+**Goal**: Execute `plan.md` step by step with continuous verification.
+
+Each step follows the [ReAct Loop](./react-loop.md):
+
+1. **Act**: Execute the step
+2. **Observe**: Read the actual result -- did it match expectations?
+3. **Reflect**: If unexpected -> stop, diagnose, decide: continue / adjust plan / revert
+4. **Record**: Mark step done + write a one-line `[Observation: ...]` note
+
+**Critical rule**: Wrong direction -> **revert, don't patch**. Patches on top of mistakes compound into unmaintainable code.
+
+---
+
+## Complexity Calibration
+
+Not every task needs all three stages:
 
 | Task Size | Approach |
 |-----------|----------|
-| Trivial (1-5 LOC) | Just do it |
-| Small (5-20 LOC, 1 file) | Mental plan, then implement |
-| Medium (20-100 LOC, 2-5 files) | Brief written plan, then implement |
-| Large (100+ LOC, 5+ files) | Full 3-stage process |
-| Critical/irreversible | Full 3-stage + independent review |
+| Simple (< 20 LOC, single file) | Just do it -- no ceremony needed |
+| Medium (20-100 LOC, 2-5 files) | Lightweight plan (5-line outline), then implement |
+| Complex (100+ LOC, 5+ files) | Full 3-stage process with written artifacts |
+| Critical (production, irreversible) | 3-stage + second reviewer on the plan |
 
-## Research-Implementation Separation
+---
 
-- **Same task**: all stages stay in one session for context continuity
-- **Different tasks**: each task gets its own session to avoid context pollution
-- If research fills too much context: write `research.md` to disk, start a new session that reads it
-- Never combine "understand the system" + "build the feature" in one prompt
+## Context Hygiene
+
+- **Same task**: research -> plan -> implement stays in one session (context continuity)
+- **Different tasks**: each gets a new session (no context pollution)
+- **Context overflow**: write artifacts to disk, start fresh session that reads from disk
+- **Parallel tasks**: use git worktrees + separate sessions
+
+The goal is that at any point during implementation, the AI's context contains exactly what it needs and nothing else.
+
+---
 
 ## Common Mistakes
 
-1. **Skipping research**: "I think I know how this works" -> leads to plans based on wrong assumptions
-2. **Research during implementation**: "Let me check how this works" mid-coding -> half-built code based on evolving understanding
-3. **Not writing the plan down**: Plans in conversation get modified by later messages without anyone noticing
-4. **Not using the annotation loop**: The plan is a conversation, not a monologue -- human annotations catch bad assumptions early
-5. **Patching instead of reverting**: 3 patches deep into a wrong approach is much more expensive than reverting
+1. **"Just build it"**: Jumping straight to implementation. Research fills context with half-understood code, implementation produces half-correct solutions.
+
+2. **Skipping the annotation loop**: The plan looks reasonable so the human says "go." Two hours later, a fundamental misunderstanding surfaces.
+
+3. **Mental-only plans**: Discussing the plan in conversation without writing `plan.md`. The plan drifts, steps get forgotten, scope creeps.
+
+4. **Research in implementation**: Discovering mid-implementation that a dependency works differently than expected. Should have been caught in Stage 1.

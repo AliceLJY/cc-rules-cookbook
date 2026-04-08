@@ -1,207 +1,201 @@
 # cc-rules-cookbook
 
-**Battle-tested rules from 500+ Claude Code sessions -- your shortcut to CC mastery**
+**Cross-disciplinary frameworks for Claude Code mastery -- cognitive psychology, risk assessment, ReAct methodology, and engineering discipline. From 500+ sessions.**
 
-<p align="center"><a href="README_CN.md">🇨🇳 中文版</a></p>
+<p align="center"><a href="README_CN.md">中文版</a></p>
 
-[![Rules](https://img.shields.io/badge/rules-30%2B-blue)](./recipes/)
-[![Lessons](https://img.shields.io/badge/lessons-34-green)](./lessons/)
-[![Methodology](https://img.shields.io/badge/methodology-3%20stages-orange)](./methodology/)
+[![Frameworks](https://img.shields.io/badge/frameworks-5-blue)](./frameworks/)
+[![Methodology](https://img.shields.io/badge/methodology-6%20systems-orange)](./methodology/)
+[![Architecture](https://img.shields.io/badge/architecture-3%20patterns-green)](./architecture/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 ---
 
-## Why Rules Matter
+## What This Is
 
-Claude Code without rules is like a powerful car without a steering wheel -- it has incredible capabilities but no reliable direction. After 500+ sessions, we learned that:
+This is not a list of "don't do X" rules. It is a cross-disciplinary system that applies cognitive psychology, risk assessment, AI research, and engineering methodology to Claude Code workflows.
 
-- **CC without rules** produces inconsistent results, makes destructive mistakes, and requires constant babysitting
-- **CC with good rules** becomes a disciplined collaborator that follows your workflow, catches its own errors, and improves over time
-- **The best rules come from real mistakes** -- every rule in this cookbook was born from an actual incident where things went wrong
+The basic rules ("don't use rm", "commit before closing") are in [quick-reference/](./quick-reference/). They matter, but they're not the interesting part. The interesting part is the frameworks -- systematic approaches to the hard problems of human-AI collaboration: getting honest output from a system that wants to please you, filtering signal from noise in code reviews, and enforcing discipline through mechanical constraints instead of willpower.
 
-The difference between a frustrating CC experience and a productive one is almost always the quality of your `CLAUDE.md`.
+Everything here was extracted from production use across 500+ sessions. Nothing is theoretical.
+
+---
+
+## The Frameworks
+
+### [Bias Correction Matrix](./frameworks/bias-correction-matrix.md)
+
+Seven cognitive biases that systematically corrupt AI code review, with mechanical countermeasures.
+
+| Bias | What It Does | Countermeasure |
+|------|-------------|----------------|
+| Sycophancy | Praises code to maintain positive interaction | "Praise is not your job. Finding problems is" |
+| Length Bias | Treats verbose code as more thorough | "Penalize verbosity. Concise > lengthy" |
+| Authority Bias | Treats confident-sounding code as correct | "Confidence means nothing" |
+| Completion Bias | Gives credit for "finished" regardless of quality | "Garbage can be complete" |
+| Effort Bias | Softens criticism when effort was clearly high | "Effort is irrelevant. Judge OUTPUT" |
+| Recency Bias | Treats newer patterns as inherently better | "New is not better" |
+| Familiarity Bias | Treats common patterns as correct | "Common is not correct" |
+
+Default review score: **2/5**. Must argue UP with evidence. 5/5 appears in fewer than 5% of reviews.
+
+Plus six anti-rationalization rules that block escape routes like "it's mostly good" (= partially bad = FAIL) and "they tried hard" (effort is irrelevant).
+
+### [Confidence x Impact Filter](./frameworks/confidence-impact-filter.md)
+
+Quantitative two-dimensional filtering for code review findings. Inspired by risk assessment methodology.
+
+```
+Confidence
+100 |  REPORT   REPORT   REPORT   REPORT   REPORT
+ 95 |  report   REPORT   REPORT   REPORT   REPORT
+ 85 |  ------   report   REPORT   REPORT   REPORT
+ 75 |  ------   ------   report   REPORT   REPORT
+ 65 |  ------   ------   ------   report   REPORT
+ 50 |  ------   ------   ------   ------   report
+  0 |  ------   ------   ------   ------   ------
+     Trivial    Low     Medium    High    Critical
+                        Impact -->
+```
+
+Critical findings (security, data loss) get reported at 50% confidence. Trivial findings (style, naming) require 95% confidence. Everything below the threshold is **silently discarded** -- no "minor notes," no "just FYIs."
+
+### [Anti-Sycophancy Protocol](./frameworks/anti-sycophancy.md)
+
+Behavioral psychology applied to AI prompting. The core insight: AI agents tell you what you want to hear because that's what their training rewards.
+
+| Biased Prompt | Neutral Prompt |
+|--------------|---------------|
+| "Find the bugs in this code" | "Read through the logic, report all findings" |
+| "This code has performance issues" | "Analyze this code's performance characteristics" |
+| "Is this approach better?" | "Compare approaches on dimensions X, Y, Z" |
+
+For high-stakes decisions: three-agent adversarial verification. Agent A produces, Agent B attacks, Agent C arbitrates.
+
+### [XY Problem Detection](./frameworks/xy-problem-detection.md)
+
+Proactive means-goal mismatch identification. When the user asks for Y (a solution) instead of X (the problem), flag it before implementing the wrong thing.
+
+### [Completion Taxonomy](./frameworks/completion-taxonomy.md)
+
+Four statuses that replace ambiguous "done":
+
+| Status | Meaning |
+|--------|---------|
+| **DONE** | Tests pass, lint clean, no untracked TODOs |
+| **DONE_WITH_CONCERNS** | Complete but has risks -- listed explicitly |
+| **BLOCKED** | Cannot proceed -- states what's needed |
+| **NEEDS_CONTEXT** | Insufficient information to begin meaningfully |
+
+---
+
+## The Methodology
+
+### [Research -> Plan -> Implement](./methodology/research-plan-implement.md)
+
+Three-stage discipline for complex tasks. Not a suggestion -- a requirement.
+
+```
+Research          Plan                Implement
+                  (annotation loop)   (ReAct loop)
+                  
+research.md  -->  plan.md         --> code changes
+human reviews     human annotates     step-by-step
+                  [Note: ...]         Act/Observe/
+                  CC updates          Reflect/Record
+                  loop 1-N rounds
+                  NO code changes
+```
+
+Key innovation: `plan.md` is **shared mutable state**. The human adds `[Note: ...]` annotations directly in the file. The AI processes annotations and updates the plan. This loops until the plan is approved. No code changes happen until the plan is final.
+
+### [ReAct Loop](./methodology/react-loop.md)
+
+Step-level observation from AI research (Yao et al., 2022). After every action: read the actual result, compare against expectations, record findings. Unexpected result -> STOP. Wrong direction -> REVERT, don't patch.
+
+Enforceable via hooks: 5+ tool calls without observation notes triggers an automated reminder.
+
+### [Scope Drift Detection](./methodology/scope-drift-detection.md)
+
+Post-implementation audit. Compare `plan.md` against `git diff --stat`:
+1. Changed files not in plan? = scope creep
+2. Plan steps without corresponding changes? = missing requirements
+
+Output: `Scope Check: CLEAN / DRIFT DETECTED / REQUIREMENTS MISSING`
+
+### [Task Contracts](./methodology/task-contracts.md)
+
+`{TASK}_CONTRACT.md` defines completion criteria before work begins. "Agent not meeting contract = not done." Different contracts get different sessions. Wrong direction -> revert and restart.
+
+### [Harness Engineering](./methodology/harness-engineering.md)
+
+The concept that separates this system from a list of tips: **paper rules are suggestions; code rules are constraints.**
+
+```
+Rule violated repeatedly --> Write a hook --> Rule is now enforced mechanically
+```
+
+Examples:
+- "Don't use rm" -> hook blocks `rm` with exit 2
+- "Commit before closing" -> stop hook detects dirty repos
+- "Check existing PRs" -> hook intercepts `gh pr create` and reminds
+- "Write observation notes" -> hook detects 5+ tool calls without notes
+
+Three violations of the same rule -> the rule gets promoted from CLAUDE.md to a hook.
+
+### [Skill Evolution](./methodology/skill-evolution.md)
+
+Systematic refinement: repeated workflow -> skill, bad skill -> update, one-off script -> toolbox, behavior pattern -> rule.
+
+---
+
+## Architecture
+
+### [Memory Architecture](./architecture/memory-architecture.md)
+
+Three-dimensional memory (recency x relevance x importance) with dual-write strategy (local files + external service). Compact priorities: architecture decisions > modified files > verification status > open TODOs > tool outputs.
+
+### [Reply Discipline](./architecture/reply-discipline.md)
+
+Three rules: scan for unhandled items before replying, read tool output completely, return to main task after detours.
+
+### [Confidence Tagging](./architecture/confidence-tagging.md)
+
+Honesty taxonomy: `[Verified]` / `[Unverified]` / `[Low Confidence]`. Tag what you know vs. what you're guessing.
 
 ---
 
 ## Quick Start
 
-Create a `CLAUDE.md` file in your project root with these 10 lines to get immediate improvement:
+Don't start with the safety checklist. Start with the framework that addresses your biggest pain point:
 
-```markdown
-# Project Rules
+| Your Problem | Start Here |
+|-------------|-----------|
+| Code reviews are useless -- too polite, too many nitpicks | [Bias Correction Matrix](./frameworks/bias-correction-matrix.md) + [Confidence x Impact Filter](./frameworks/confidence-impact-filter.md) |
+| AI agrees with everything I say | [Anti-Sycophancy Protocol](./frameworks/anti-sycophancy.md) |
+| Complex tasks produce confused output | [Research -> Plan -> Implement](./methodology/research-plan-implement.md) |
+| Rules keep getting forgotten | [Harness Engineering](./methodology/harness-engineering.md) |
+| "Done" doesn't mean done | [Task Contracts](./methodology/task-contracts.md) + [Completion Taxonomy](./frameworks/completion-taxonomy.md) |
+| Need operational safety basics | [Safety Checklist](./quick-reference/safety-checklist.md) |
 
-## Execution
-- Multi-step tasks: auto-confirm, stop only on error or need input
-- After every mistake: update CLAUDE.md to prevent recurrence
-
-## Honesty
-- Uncertain: say "not sure", never fabricate
-
-## Safety
-- Never use `rm` to delete files (use `mv` to `~/.Trash/`)
-- Never commit untested code
-- Change API/add params: grep ALL callers and confirm each
-
-## Verification
-- Run tests/lint before declaring done
-- After tool call: read the actual result; if unexpected, stop and rethink
-```
-
-Then run `claude` in that directory. That's it -- CC reads `CLAUDE.md` automatically.
-
-For the full annotated template, see [`templates/CLAUDE.md.template`](./templates/CLAUDE.md.template).
+For ready-to-use templates: [`templates/CLAUDE.md.template`](./templates/CLAUDE.md.template) and [`templates/workflow.md.template`](./templates/workflow.md.template).
 
 ---
 
-## Cookbook Structure
+## Who This Is For
 
-| Directory | What's Inside | Start Here |
-|-----------|--------------|------------|
-| [`templates/`](./templates/) | Ready-to-use CLAUDE.md and workflow templates | [CLAUDE.md.template](./templates/CLAUDE.md.template) |
-| [`recipes/`](./recipes/) | Individual rule categories (execution, honesty, safety, etc.) | [execution-principles.md](./recipes/execution-principles.md) |
-| [`lessons/`](./lessons/) | 34 battle-tested lessons from real incidents | [Lessons Index](./lessons/README.md) |
-| [`methodology/`](./methodology/) | The 3-stage workflow system | [research-plan-implement.md](./methodology/research-plan-implement.md) |
-| [`philosophy/`](./philosophy/) | Deeper thinking about AI collaboration | [anti-sycophancy.md](./philosophy/anti-sycophancy.md) |
+People who've used Claude Code enough to realize that raw power isn't enough -- you need steering. You've hit the wall where the AI is capable but unreliable, where it follows instructions until it doesn't, where "done" is ambiguous and reviews are sycophantic.
 
----
-
-## The 3-Stage Methodology
-
-Complex tasks should follow three stages. Skipping stages is the #1 source of wasted work.
-
-```
-+-------------------+     +-------------------+     +-------------------+
-|                   |     |                   |     |                   |
-|    1. RESEARCH    |---->|     2. PLAN       |---->|   3. IMPLEMENT    |
-|                   |     |                   |     |                   |
-| - Read code/docs  |     | - Write plan.md   |     | - Execute plan    |
-| - Produce         |     | - Code snippets   |     | - Step by step    |
-|   research.md     |     | - File paths      |     |                   |
-| - Human reviews   |     | - TODO list       |     |  +-------------+ |
-|                   |     | - Annotation loop |     |  | ReAct Loop  | |
-|                   |     |   (1-N rounds)    |     |  |             | |
-|                   |     | - NO code changes |     |  | Act         | |
-|                   |     |                   |     |  | Observe     | |
-|                   |     |                   |     |  | Reflect     | |
-|                   |     |                   |     |  | Record      | |
-|                   |     |                   |     |  +-------------+ |
-+-------------------+     +-------------------+     +-------------------+
-```
-
-**Key principle**: Research and implementation happen in sequence, never mixed. Mixing them pollutes context and leads to confused output.
-
-See [`methodology/`](./methodology/) for detailed guides on each stage.
-
----
-
-## Top 10 Lessons
-
-The most impactful rules distilled from 500+ sessions:
-
-| # | Lesson | Category | Impact |
-|---|--------|----------|--------|
-| 1 | [Never use `rm` -- use Trash](./lessons/safety/no-rm-use-trash.md) | Safety | Prevented data loss multiple times |
-| 2 | [Grep all callers after API changes](./lessons/workflow/grep-all-callers.md) | Workflow | Eliminated incomplete refactors |
-| 3 | [Question necessity before executing](./lessons/communication/question-before-execute.md) | Communication | Saved thousands of wasted tokens |
-| 4 | [Test before commit](./lessons/quality/test-before-commit.md) | Quality | Stopped broken code from shipping |
-| 5 | [PR review: append, don't create new](./lessons/workflow/pr-review-workflow.md) | Workflow | Preserved review history |
-| 6 | [Design for evolvability](./lessons/quality/code-evolvability.md) | Quality | Better code architecture |
-| 7 | [README: separate languages](./lessons/quality/readme-bilingual.md) | Quality | Professional documentation |
-| 8 | [Check existing PRs first](./lessons/workflow/check-existing-prs.md) | Workflow | Avoided duplicate work |
-| 9 | [Use neutral prompts](./lessons/communication/neutral-prompts.md) | Communication | More accurate code reviews |
-| 10 | [Read tool output completely](./recipes/reply-discipline.md) | Discipline | Caught errors early |
-
----
-
-## Rule Writing Guide
-
-### How to Write Effective CLAUDE.md Rules
-
-**Do:**
-- Write rules from real incidents, not theory
-- Keep each rule to 1-2 lines
-- Include the "why" -- CC follows rules better when it understands the reason
-- Use imperative mood: "Never use rm" not "rm should not be used"
-- Group related rules under clear headers
-- Update rules when new incidents happen
-
-**Don't:**
-- Write essay-length rules -- CC skims long text just like humans do
-- Include rules you've never needed -- every rule adds cognitive load
-- Copy generic advice -- your rules should reflect YOUR workflow
-- Forget to remove outdated rules -- stale rules dilute important ones
-
-### Rule Anatomy
-
-The best rules follow this pattern:
-
-```markdown
-## [Category]
-
-- [What to do/not do] ([why/what happens otherwise])
-```
-
-Example:
-```markdown
-## Safety
-
-- Never use `rm` to delete files (use `mv` to `~/.Trash/` -- rm is unrecoverable)
-- Change API/add params: grep ALL callers and confirm each (partial updates cause runtime errors)
-```
-
-### Anti-Patterns
-
-```markdown
-# Too vague -- CC can't act on this
-- Write good code
-
-# Too long -- CC will skim past it
-- When modifying any function that accepts parameters, you should always check
-  every single file in the entire codebase to make sure that no other file
-  references this function with the old parameter signature, because if you
-  don't, you might end up with runtime errors that are hard to debug...
-
-# Contradictory -- CC gets confused
-- Always ask before making changes
-- Multi-step tasks: auto-confirm, don't stop
-```
-
----
-
-## CLAUDE.md Template
-
-The full annotated template is at [`templates/CLAUDE.md.template`](./templates/CLAUDE.md.template). It includes:
-
-- Project description placeholder
-- Execution principles
-- Honesty rules
-- NEVER/ALWAYS lists with explanations
-- Verification rules
-- Reply discipline
-- Coding conventions placeholder
-
-Each section has `<!-- CUSTOMIZE: ... -->` comments explaining what to change for your project.
-
----
-
-## Contributing
-
-Found a rule that saved your bacon? Open a PR! Each lesson should follow the format in [`lessons/README.md`](./lessons/README.md).
+This cookbook is the steering. Not more rules -- better frameworks.
 
 ---
 
 ## Companion Repos
 
-- [**cc-hooks-gallery**](https://github.com/AliceLJY/cc-hooks-gallery) -- Pre-built hooks for Claude Code automation
+- [**cc-hooks-gallery**](https://github.com/AliceLJY/cc-hooks-gallery) -- Pre-built hooks for Claude Code automation (the enforcement layer for harness engineering)
 
 ---
 
 ## License
 
 MIT -- take what works, leave what doesn't.
-
----
-
-> *"The rules you write after a disaster are worth ten times the rules you write before one."*
->
-> -- Wisdom from 500+ Claude Code sessions
