@@ -2,6 +2,8 @@
 
 **Battle-tested rules from 500+ Claude Code sessions -- your shortcut to CC mastery**
 
+<p align="center"><a href="README_CN.md">🇨🇳 中文版</a></p>
+
 [![Rules](https://img.shields.io/badge/rules-30%2B-blue)](./recipes/)
 [![Lessons](https://img.shields.io/badge/lessons-34-green)](./lessons/)
 [![Methodology](https://img.shields.io/badge/methodology-3%20stages-orange)](./methodology/)
