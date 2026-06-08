@@ -1,3 +1,5 @@
+> **[Archived]** This repository is no longer maintained and is kept for history only.
+
 # cc-rules-cookbook
 
 **Cross-disciplinary frameworks for Claude Code mastery -- cognitive psychology, risk assessment, ReAct methodology, and engineering discipline. From 500+ sessions.**
